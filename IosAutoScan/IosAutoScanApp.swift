@@ -206,17 +206,25 @@ struct ScrollPage: View {
                     .font(.system(size: 34))
                     .accessibilityLabel("")          // per-page violation
                     .padding(.bottom, 8)
-                // Pure black/white alternating rows: each scroll step swaps luminance
-                // at every screen position (colour bands sit at similar brightness).
-                ForEach(1...40, id: \.self) { i in
+                // 10 pure black/white alternating rows (short list → one scroll reaches
+                // the bottom). Luminance alternation makes the scroll step pHash-distinct.
+                ForEach(1...10, id: \.self) { i in
                     let dark = i % 2 == 0
                     Text("Row \(i)")
                         .font(.system(size: 22, weight: .bold))
                         .foregroundColor(dark ? .white : .black)
                         .frame(maxWidth: .infinity, minHeight: 56)
                         .background(dark ? Color.black : Color.white)
-                        .accessibilityIdentifier(i == 40 ? "scroll_bottom" : "row_\(i)")
+                        .accessibilityIdentifier("row_\(i)")
                 }
+                // Only reachable after the first scroll: a vivid 60%-width block that
+                // makes the bottom-of-scroll screen clearly distinct from the top.
+                Rectangle()
+                    .fill(Color.red)
+                    .frame(width: UIScreen.main.bounds.width * 0.6, height: 140)
+                    .overlay(Text("BOTTOM").font(.system(size: 28, weight: .heavy)).foregroundColor(.white))
+                    .padding(.vertical, 20)
+                    .accessibilityIdentifier("scroll_bottom")
             }
         }
         .accessibilityIdentifier("scroll_container")
