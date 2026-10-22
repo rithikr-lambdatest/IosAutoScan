@@ -35,8 +35,6 @@ struct HomeView: View {
         ("LongPress", AnyView(LongPressPage())),
         ("DoubleTap", AnyView(DoubleTapPage())),
         ("Flick", AnyView(FlickPage())),
-        ("Actions", AnyView(ActionsPage())),
-        ("Back", AnyView(BackPage())),
         ("Orientation", AnyView(OrientationPage())),
     ]
     var body: some View {
@@ -184,20 +182,6 @@ struct DragCounterPage: View {
 struct SwipePage: View { var body: some View { DragCounterPage(title: "Swipe", seed: 5, areaId: "swipe_area", counterId: "swipe_count", prefix: "swipes") } }
 struct FlickPage: View { var body: some View { DragCounterPage(title: "Flick", seed: 9, areaId: "flick_area", counterId: "flick_count", prefix: "flicks") } }
 
-struct ActionsPage: View {
-    @State private var count = 0
-    @State private var fired = false
-    var body: some View {
-        Page(title: "Actions", seed: 10, fired: $fired, beforeText: "ACTIONS\nWAIT", afterText: "ACTIONS\nDONE") {
-            Rectangle().fill(Color.orange.opacity(0.3)).frame(height: 160)
-                .onTapGesture { count += 1; fired = true }
-                .simultaneousGesture(DragGesture(minimumDistance: 20).onEnded { _ in count += 1; fired = true })
-                .accessibilityIdentifier("actions_area")
-            Text("gestures: \(count)").accessibilityIdentifier("actions_count")
-        }
-    }
-}
-
 struct ScrollPage: View {
     var body: some View {
         ScrollView {
@@ -255,16 +239,6 @@ struct DoubleTapPage: View {
                 .onTapGesture(count: 2) { count += 1; fired = true }
                 .accessibilityIdentifier("doubletap_area")
             Text("doubletaps: \(count)").accessibilityIdentifier("doubletap_count")
-        }
-    }
-}
-
-struct BackPage: View {
-    @State private var fired = false
-    var body: some View {
-        Page(title: "Back", seed: 11, fired: $fired, beforeText: "BACK\nPRESS BACK", afterText: "BACK\nPRESS BACK") {
-            Text("Use driver.back() — it taps the navigation bar back button.")
-                .accessibilityIdentifier("back_hint")
         }
     }
 }
